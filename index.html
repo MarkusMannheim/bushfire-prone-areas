@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Fire-prone Canberra</title>
+    <meta name="description" content="Map showing bushfire-prone areas of Canberra and the ACT.">
+    <meta name="keywords" content="canberra, act, bushfires, fires, map, prone, bushfire">
+    <meta name="author" content="Markus Mannheim">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Initial scripts -->
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js"></script>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css" rel="stylesheet">
+    <link href="./resources/style.css" rel="stylesheet">
+    <link href="./resources/mmLogo64.png" rel="icon">
+    <!-- Page data for scrapers -->
+    <meta property="og:title" content="Fire-prone Canberra">
+    <meta property="og:description" content="Map showing bushfire-prone areas of Canberra and the ACT.">
+    <meta property="og:image" content="./resources/bushfire.jpg">
+    <meta property="og:url" content="http://mannheim.media/index.html">
+    <meta property="og:type" content="website">
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:site" content="@MarkusMannheim">
+    <meta property="twitter:creator" content="@MarkusMannheim">
+  </head>
+  <body>
+    <!-- Initial page layout -->
+    <div id="base">
+      <div id="map"></div>
+      <div id="menu">
+        <p>select map:</p>
+        <select onchange="changeMap()">
+          <option value="streets-v11">STREET</option>
+          <option value="satellite-v9">SATELLITE</option>
+          <option value="dark-v10">DARK</option>
+          <option value="light-v10">LIGHT</option>
+        </select>
+      </div>
+    </div>
+    <script>
+      // load data
+      d3.json("./resources/proneAreas.topojson", function(error, data) {
+        if (error) throw error;
+        fireData = topojson.feature(data, data.objects.tracts);
+        // set up MapBox engine
+        mapboxgl.accessToken = "pk.eyJ1IjoibmV3cy1vbjFpbmUiLCJhIjoiR3FlZFZlVSJ9._30EFE9XYhQitqf4gzRG-g";
+        map = new mapboxgl.Map({
+          container: "map",
+          center: [149.126944, -35.293056],
+          attributionControl: false,
+          zoom: 8,
+          minZoom: 8,
+          maxZoom: 17,
+          pitchWithRotate: false,
+          dragRotate: false,
+          touchZoomRotate: false
+        });
+        // add navigation and custom attribution
+        map.addControl(new mapboxgl.AttributionControl({
+            compact: true
+          }))
+          .addControl(new mapboxgl.NavigationControl({
+            showCompass: false
+          }));
+        map.on("load", function() {
+          let attribution = d3.select(".mapboxgl-ctrl-attrib-inner");
+          attribution.html("&copy; ACT Government | " + attribution.html().slice(0, -20));
+        });
+        // svg layer
+        container = map.getCanvasContainer();
+        svg = d3.select(container)
+          .append("svg")
+            .attr("id", "svg");
+        svgGroup = svg
+          .append("g")
+            .attr("id", "svgGroup");
+        selector = d3.select("select");
+        changeMap();
+        // map calculations
+        projection = calcProjection();
+        path = d3.geoPath();
+        // draw bushfire prone area
+        proneArea = svgGroup
+          .selectAll(".proneArea")
+            .data(fireData.features)
+          .enter().append("path")
+            .attr("class", "proneArea");
+        // initial fade-in and zoom
+        d3.select("body").transition()
+          .duration(2500)
+          .style("opacity", 1);
+        d3.timeout(function() {
+          map.flyTo({ zoom: 11 });
+        }, 2500);
+        // re-render SVGs upon movement
+        map.on("viewreset", render)
+          .on("move", render)
+          .on("move", render);
+        render();
+      });
+      // re-renders SVG when map moves
+      function render() {
+        projection = calcProjection();
+        path.projection(projection);
+        proneArea.attr("d", path);
+      }
+      // recalculates D3 map projection when map moves
+      function calcProjection() {
+        bbox = document.body.getBoundingClientRect();
+        center = map.getCenter();
+        zoom = map.getZoom();
+        scale = 256 / Math.PI * Math.pow(2, zoom);
+        return d3.geoMercator()
+          .center([center.lng, center.lat])
+          .translate([bbox.width / 2, bbox.height / 2])
+          .scale(scale);
+      }
+      // change basemap
+      function changeMap() {
+        basemap = selector.property("value");
+        map.setStyle("mapbox://styles/mapbox/" + basemap);
+      }
+    </script>
+  </body>
+</html>
