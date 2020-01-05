@@ -48,10 +48,14 @@ body, #map, #svg {
 select {
   outline: none;
   border: none;
-  background-color: rgba(0, 0, 0, .5);
+  background-color: rgba(0, 0, 0, .0);
   color: white;
   font-size: 1.25rem;
   font-family: "ABCSans Black", sans-serif;
+}
+select option {
+  background-color: rgba(0, 0, 0, .01);
+  color: #1C1C1C;
 }
 p {
   margin: 0;
