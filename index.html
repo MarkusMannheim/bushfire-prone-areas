@@ -91,9 +91,11 @@
         d3.select("body").transition()
           .duration(2500)
           .style("opacity", 1);
-        d3.timeout(function() {
-          map.flyTo({ zoom: 11 });
-        }, 2500);
+        map.flyTo({
+          zoom: 11,
+          speed: 0.33,
+          curve: 1
+        });
         // re-render SVGs upon movement
         map.on("viewreset", render)
           .on("move", render)
