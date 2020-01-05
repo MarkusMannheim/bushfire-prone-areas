@@ -66,7 +66,7 @@
           }));
         map.on("load", function() {
           let attribution = d3.select(".mapboxgl-ctrl-attrib-inner");
-          attribution.html("&copy; <a href='https://esa.act.gov.au/cbr-be-emergency-ready/bushfires'>ACT Government</a> | " + attribution.html().slice(0, -20));
+          attribution.html("&copy; <a href='https://esa.act.gov.au/cbr-be-emergency-ready/bushfires' target='_blank'>ACT Government</a> | " + attribution.html().slice(0, -20));
         });
         // svg layer
         container = map.getCanvasContainer();
