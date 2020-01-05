@@ -38,7 +38,7 @@ body, #map, #svg {
   border-radius: 5px;
   color: white;
   box-shadow: 2px 2px 5px #1C1C1C;
-  background-color: rgba(0, 0, 0, .75);
+  background-color: rgba(0, 0, 0, .5);
 }
 #menu p {
   padding-left: 5px;
@@ -48,15 +48,10 @@ body, #map, #svg {
 select {
   outline: none;
   border: none;
-  background-color: rgba(0, 0, 0, .75);
-}
-select, select option {
+  background-color: rgba(0, 0, 0, .5);
   color: white;
   font-size: 1.25rem;
   font-family: "ABCSans Black", sans-serif;
-}
-select option {
-  background-color: #01CFFF;
 }
 p {
   margin: 0;
