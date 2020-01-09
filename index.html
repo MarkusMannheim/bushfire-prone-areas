@@ -2,9 +2,9 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Fire-prone Canberra</title>
-    <meta name="description" content="Check whether you live in a bushfire-prone area of the ACT.">
-    <meta name="keywords" content="canberra, act, bushfires, fires, map, prone, bushfire">
+    <title>Fire-prone Canberra & Queanbeyan</title>
+    <meta name="description" content="Check whether you live in a bushfire-prone area of the ACT or Queanbeyan.">
+    <meta name="keywords" content="canberra, queanbeyan, act, bushfires, fires, map, prone, bushfire">
     <meta name="author" content="Markus Mannheim">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Initial scripts -->
@@ -13,11 +13,11 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js"></script>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css" rel="stylesheet">
-    <link href="./resources/style.css?v1.1" rel="stylesheet">
+    <link href="./resources/style.css?v1.2" rel="stylesheet">
     <link href="./resources/abcLogo64.png" rel="icon">
     <!-- Page data for scrapers -->
-    <meta property="og:title" content="Fire-prone Canberra">
-    <meta property="og:description" content="Check whether you live in a bushfire-prone area of the ACT.">
+    <meta property="og:title" content="Fire-prone Canberra & Queanbeyan">
+    <meta property="og:description" content="Check whether you live in a bushfire-prone area of the ACT or Queanbeyan.">
     <meta property="og:image" content="https://markusmannheim.github.io/bushfire-prone-areas/resources/bushfireMap.jpg">
     <meta property="og:url" content="https://markusmannheim.github.io/bushfire-prone-areas/">
     <meta property="og:type" content="website">
@@ -41,9 +41,9 @@
     </div>
     <script>
       // load data
-      d3.json("./resources/proneAreas.topojson", function(error, data) {
+      d3.json("./resources/fireArea.topojson", function(error, data) {
         if (error) throw error;
-        fireData = topojson.feature(data, data.objects.tracts);
+        fireData = topojson.feature(data, data.objects.areas);
         // set up MapBox engine
         mapboxgl.accessToken = "pk.eyJ1IjoibmV3cy1vbjFpbmUiLCJhIjoiR3FlZFZlVSJ9._30EFE9XYhQitqf4gzRG-g";
         map = new mapboxgl.Map({
@@ -66,7 +66,7 @@
           }));
         map.on("load", function() {
           let attribution = d3.select(".mapboxgl-ctrl-attrib-inner");
-          attribution.html("&copy; <a href='https://esa.act.gov.au/cbr-be-emergency-ready/bushfires' target='_blank'>ACT Government</a> | " + attribution.html().slice(0, -20));
+          attribution.html("&copy; <a href='https://esa.act.gov.au/cbr-be-emergency-ready/bushfires' target='_blank'>ACT Government</a> | &copy; <a href='https://www.qprc.nsw.gov.au' target='_blank'>Queanbeyan-Palerang Regional Council</a> | " + attribution.html());
         });
         // svg layer
         container = map.getCanvasContainer();
@@ -82,11 +82,11 @@
         projection = calcProjection();
         path = d3.geoPath();
         // draw bushfire prone area
-        proneArea = svgGroup
-          .selectAll(".proneArea")
+        fireAreas = svgGroup
+          .selectAll(".area")
             .data(fireData.features)
           .enter().append("path")
-            .attr("class", "proneArea");
+            .attr("class", "area");
         // initial fade-in and zoom
         d3.select("body").transition()
           .duration(2500)
@@ -106,7 +106,7 @@
       function render() {
         projection = calcProjection();
         path.projection(projection);
-        proneArea.attr("d", path);
+        fireAreas.attr("d", path);
       }
       // recalculates D3 map projection when map moves
       function calcProjection() {
