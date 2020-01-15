@@ -21,10 +21,10 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.js"></script>
-    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v1.5.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css" rel="stylesheet">
     <link href="./resources/style.css" rel="stylesheet">
-    <link href="./resources/mmLogo64.png" rel="icon">
+    <link href="./resources/abcLogo64.png" rel="icon">
     <!-- Page data for scrapers -->
     <meta property="og:title" content="Fire-prone Canberra">
     <meta property="og:description" content="Check whether you live in a bushfire-prone area of the ACT.">
@@ -55,7 +55,7 @@
         if (error) throw error;
         fireData = topojson.feature(data, data.objects.tracts);
         // set up MapBox engine
-        mapboxgl.accessToken = "pk.eyJ1IjoibmV3cy1vbjFpbmUiLCJhIjoiR3FlZFZlVSJ9._30EFE9XYhQitqf4gzRG-g";
+        mapboxgl.accessToken = "pk.eyJ1IjoibWFya3VzbWFubmhlaW0iLCJhIjoiY2syeml4dXIwMGpkazNmcGVncnp5d3FpNSJ9.JnJiNz0m-UC8KaNx_VJ81A";
         map = new mapboxgl.Map({
           container: "map",
           center: [149.126944, -35.293056],
